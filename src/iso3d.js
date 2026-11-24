@@ -44,7 +44,7 @@ export function isoBuild(m, project, view, img, bounds, margin, P, theme) {
   slabMat.userData.own = true;
   const baked = bakeMap(m, view);
   const T = 0.9 * cs; // slab thickness
-  for (const [, cells] of baked.owned) for (const r of cellsToRects(cells)) {
+  for (const [el, cells] of baked.owned) if (el.type !== 'stairs') for (const r of cellsToRects(cells)) { // no slab box under stairs
     const box = new THREE.Mesh(new THREE.BoxGeometry(r.w * cs, T, r.h * cs), slabMat);
     box.position.set((r.x + r.w / 2) * cs, -T / 2 - 0.01, (r.y + r.h / 2) * cs);
     group.add(box);
