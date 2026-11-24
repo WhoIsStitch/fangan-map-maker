@@ -4,7 +4,8 @@ import { h } from './dom.js';
 import { renderMapImage } from './render2d.js';
 import { THEMES, getTheme } from './themes.js';
 import { bakeMap, cellAt } from './bake.js';
-import { condActive, roomCenter, elementTitle } from './model.js';
+import { condActive, roomCenter, elementTitle, cellsToRects } from './model.js';
+import { isoCanvas, isoBuild, isoCamera, isoRender, isoProject, isoUnproject } from './iso3d.js';
 import { assetImage } from './icons.js';
 
 const P = 32;              // pixels per grid cell in the flat render
@@ -87,12 +88,20 @@ export function renderV3(host, mapId) {
   // flat render of the floor, then tilted in draw()
   const r = renderMapImage(m, S.project, T, { pxPerCell: P, margin: MARGIN, view: S.view, transparent: true, labels: false, icons: true, onImage: () => { st.projKey = ''; renderV3(host); } });
   st.img = r.canvas; st.bounds = r.bounds; st.projKey = ''; st.forceDraw = true;
+  isoBuild(m, S.project, S.view, st.img, st.bounds, MARGIN, P, T);
+  // floor pieces (merged rectangles) for drawing the 3D thickness as shapes
+  {
+    const bk = bakeMap(m, S.view);
+    st.floorRects = [];
+    for (const [, cells] of bk.owned) st.floorRects.push(...cellsToRects(cells));
+  }
 
   // DOM
   const floors = floorsOf(m);
   const fi = floors.indexOf(m);
   st.cv = h('canvas', { class: 'v3-cv' });
   st.ov = h('canvas', { class: 'v3-cv v3-ov' }); // cursor layer (animated on its own)
+  st.top = h('canvas', { class: 'v3-cv v3-top' }); // characters and pins, above the 3D floor
   st.ovDirty = true;
   st.go = h('button', { class: 'v3-go', title: 'Walk there (Enter)', onclick: go }, h('span', { class: 'v3-x' }, '↵'), h('b', null, 'GO!'), playerHead());
   st.list = h('div', { class: 'v3-list' }, st.items.length ? st.items.map((it, i) => row(it, i)) : h('div', { class: 'v3-empty' }, st.tab === 'place' ? 'No places on this floor yet. Name some rooms or add Fast-travel points.' : 'No characters placed for this chapter / time.'));
@@ -104,7 +113,7 @@ export function renderV3(host, mapId) {
     const areaName = m.isArea || floorLong(m) === m.name ? m.name : (m.building || m.name);
     if (st.tab === 'student') st.list = portraitGrid();
     host.replaceChildren(h('div', { class: 'v3 v3alt', style: { '--v3a': A, '--v3d': mixHex(A, '#000000', 0.85), '--v3l': mixHex(A, '#ffffff', 0.35) } },
-      st.cv, st.ov,
+      st.cv, isoCanvas(), st.top, st.ov,
       h('div', { class: 'va-head' },
         h('div', { class: 'va-map' }, 'MAP'),
         h('div', { class: 'va-area' },
@@ -134,7 +143,7 @@ export function renderV3(host, mapId) {
     return;
   }
   host.replaceChildren(h('div', { class: 'v3', style: { '--v3a': A, '--v3d': mixHex(A, '#000000', 0.85) } },
-    st.cv, st.ov,
+    st.cv, isoCanvas(), st.top, st.ov,
     h('div', { class: 'v3-mapbar' }, h('span', null, 'MAP')),
     h('div', { class: 'v3-title' },
       h('button', { class: 'v3-sh', title: 'Previous floor (Q)', disabled: fi <= 0, onclick: () => stepFloor(-1) }, 'Q'),
@@ -283,6 +292,7 @@ function sizeCanvas() {
   st.W = r.width; st.H = r.height;
   st.cv.width = Math.round(r.width * st.dpr); st.cv.height = Math.round(r.height * st.dpr);
   if (st.ov) { st.ov.width = st.cv.width; st.ov.height = st.cv.height; }
+  if (st.top) { st.top.width = st.cv.width; st.top.height = st.cv.height; }
   st.forceDraw = true;
 }
 
@@ -296,20 +306,13 @@ function offset() {
   const { cx, cy } = center();
   return { e: cx - (a * st.fu + c * st.fv), f: cy - (b * st.fu + d * st.fv) };
 }
-function proj(gx, gy) {
-  const { a, b, c, d } = mat();
-  const { e, f } = offset();
-  const u = (gx - st.bounds.x + MARGIN) * P, v = (gy - st.bounds.y + MARGIN) * P;
-  return { x: a * u + c * v + e, y: b * u + d * v + f };
+/** Point the 3D camera at the current focus / zoom. */
+function setCamera() {
+  const { cx, cy } = center();
+  isoCamera(st.W, st.H, cx, cy, { x: st.fu / P + st.bounds.x - MARGIN, y: st.fv / P + st.bounds.y - MARGIN }, st.k * P);
 }
-function unproj(X, Y) {
-  const { a, b, c, d } = mat();
-  const { e, f } = offset();
-  const det = a * d - b * c;
-  const dX = X - e, dY = Y - f;
-  const u = (d * dX - c * dY) / det, v = (-b * dX + a * dY) / det;
-  return { x: u / P + st.bounds.x - MARGIN, y: v / P + st.bounds.y - MARGIN };
-}
+function proj(gx, gy) { return isoProject(gx, gy, st.W, st.H); }
+function unproj(X, Y) { return isoUnproject(X, Y, st.W, st.H); }
 
 /** A darkened copy of the flat floor, made once per map (used for the fake thickness). */
 function darkImage() {
@@ -535,22 +538,22 @@ function drawCursor() {
 }
 
 function draw(sharp) {
-  const g = st.cv.getContext('2d');
+  void sharp;
   const dpr = st.dpr;
+  const bg = st.cv.getContext('2d');
+  bg.setTransform(1, 0, 0, 1, 0, 0);
+  bg.drawImage(background(), 0, 0);
+  // the floor, walls, doors and stairs in real 3D
+  setCamera();
+  isoRender(st.W, st.H, dpr);
+  // characters and pins on their own layer above it
+  const g = st.top.getContext('2d');
   g.setTransform(1, 0, 0, 1, 0, 0);
-  g.drawImage(background(), 0, 0);
+  g.clearRect(0, 0, st.top.width, st.top.height);
   g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const pj = projected(sharp);
-  const { e, f } = offset();
-  const r = st.k / pj.k; // >1 while zooming in before the sharp rebuild
-  g.drawImage(pj.canvas, e + pj.minX * r, f + pj.minY * r, (pj.canvas.width / dpr) * r, (pj.canvas.height / dpr) * r);
-
   const m = curMap();
   const it = st.items[st.sel];
   const onThisMap = st.shown && it && it.mapId === st.mapId;
-
-  // stairs as real 3D steps on top of the flat floor
-  for (const s of m.elements) if (s.type === 'stairs' && vis(s)) drawStairs3D(g, s);
 
   // characters standing on this floor, back to front
   const people = st.students.filter((s) => s.mapId === m.id).map((s) => ({ ...s, p: proj(s.x, s.y) }));
@@ -768,11 +771,13 @@ function wireCanvas() {
     const dX = e.clientX - st.drag.x, dY = e.clientY - st.drag.y;
     if (Math.abs(dX) + Math.abs(dY) > 4) st.drag.moved = true;
     if (!st.drag.moved) return;
-    const { a, b, c, d } = mat();
-    const det = a * d - b * c;
     st.follow = false;
-    st.fu = st.drag.fu - (d * dX - c * dY) / det;
-    st.fv = st.drag.fv - (-b * dX + a * dY) / det;
+    const r = cv.getBoundingClientRect();
+    setCamera();
+    const g0 = unproj(st.drag.px ?? (st.drag.x - r.left), st.drag.py ?? (st.drag.y - r.top));
+    const g1 = unproj(e.clientX - r.left, e.clientY - r.top);
+    st.fu -= (g1.x - g0.x) * P; st.fv -= (g1.y - g0.y) * P;
+    st.drag.px = e.clientX - r.left; st.drag.py = e.clientY - r.top;
   });
   cv.addEventListener('pointerup', (e) => {
     const d = st.drag; st.drag = null;
