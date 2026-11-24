@@ -203,7 +203,7 @@ async function render() {
   const nav = (id, icon, label, count) => h('button', { class: 'hm-nav' + (view === id ? ' on' : ''), onclick: () => { view = id; render(); } }, h('span', null, icon), label, count != null ? h('span', { class: 'hm-count' }, count) : null);
 
   const side = h('aside', { class: 'hm-side' },
-    h('div', { class: 'hm-brand' }, h('span', { class: 'logo' }, '▦'), ' TVF ', h('b', null, 'MAP MAKER')),
+    h('div', { class: 'hm-brand' }, h('span', { class: 'logo' }, '▦'), ' FANGAN ', h('b', null, 'MAP MAKER')),
     h('input', { class: 'hm-search', placeholder: '🔍  Search projects', value: search, oninput: (e) => { search = e.target.value; render().then(() => { const s = root.querySelector('.hm-search'); s.focus(); s.setSelectionRange(s.value.length, s.value.length); }); } }),
     nav('recents', '🕘', 'Recents'),
     nav('all', '▦', 'All projects', live.length),

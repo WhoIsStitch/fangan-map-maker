@@ -38,7 +38,7 @@ export function dormRow(o) {
 }
 
 export function sampleProject() {
-  const p = newProject('TVF Academy (sample)');
+  const p = newProject('Sample Academy');
   const names = Object.fromEntries(p.characters.map((c) => [c.id, c.name]));
   const f1 = p.maps[0];
   f1.name = '1F'; f1.building = 'School';
@@ -88,9 +88,10 @@ export function sampleProject() {
   const gymLabel = newLabel(-1.5, 13, 'Gym ←'); E.push(gymLabel);
   // markers
   const spawn = newMarker('spawn', 5, 13); spawn.rot = 90; E.push(spawn);
-  const nina = newMarker('npc', 7, 12); nina.characterId = 'chr_nina'; nina.name = 'Nina'; nina.rot = 270; nina.text = "You're finally awake! Come on, everyone's in the dining hall."; E.push(nina);
-  const king = newMarker('npc', 4, 21); king.characterId = 'chr_king'; king.name = 'King'; king.text = "Don't just stand there. Sit down."; king.cond.chMin = 0; E.push(king);
-  const kingNight = newMarker('npc', 29, 12.5); kingNight.characterId = 'chr_king'; kingNight.name = 'King'; kingNight.text = 'It\'s nighttime. Go to bed.'; kingNight.cond.times = [3]; E.push(kingNight);
+  const who = (i) => p.characters[i];
+  const nina = newMarker('npc', 7, 12); nina.characterId = who(1).id; nina.name = who(1).name; nina.rot = 270; nina.text = "You're finally awake! Come on, everyone's in the dining hall."; E.push(nina);
+  const king = newMarker('npc', 4, 21); king.characterId = who(2).id; king.name = who(2).name; king.text = "Don't just stand there. Sit down."; king.cond.chMin = 0; E.push(king);
+  const kingNight = newMarker('npc', 29, 12.5); kingNight.characterId = who(2).id; kingNight.name = who(2).name; kingNight.text = 'It\'s nighttime. Go to bed.'; kingNight.cond.times = [3]; E.push(kingNight);
   king.cond.times = [0, 1, 2];
   const hot = newMarker('hotspot', 13, 21); hot.name = 'Shelves'; hot.text = 'Rows of supplies. A box of tape is missing.'; E.push(hot);
   const ev = { id: uid('ev'), name: "Cameron's Account", desc: 'Cameron says nobody passed the dining hall after 10pm.' };
@@ -123,7 +124,7 @@ export function sampleProject() {
   const shutter = newDoor(15, 8, 'h', 3); shutter.lock = 'barred'; shutter.lockMsg = 'The way to 3F is shuttered. It opens after the next trial.'; F.push(shutter);
   const sp2 = newMarker('light', 16.5, 12); F.push(sp2);
   const j2 = newMarker('jump', 16.5, 14); j2.name = '2F corridor'; F.push(j2);
-  const maia = newMarker('fte', 7, 4); maia.characterId = 'chr_maia'; maia.name = 'Maia'; maia.text = 'Maia is reading quietly.'; F.push(maia);
+  const maia = newMarker('fte', 7, 4); maia.characterId = who(4).id; maia.name = who(4).name; maia.text = who(4).name + ' is reading quietly.'; F.push(maia);
 
   // links between the stairs
   st1.link = { mapId: f2.id, targetId: st2.id };
@@ -137,8 +138,8 @@ export function sampleProject() {
   const back = newMarker('portal', 17.5, 5); back.name = 'To the school'; back.rot = 90; G.push(back);
   const trophies = newMarker('hotspot', 16, 3.5); trophies.name = 'Trophy case'; trophies.text = 'Dusty trophies. One of them is missing.'; G.push(trophies);
   const stage = newMarker('prop', 7, 1); stage.name = 'Stage'; stage.w = 8; stage.h = 2; stage.height = 1; stage.color = '#6b4a3a'; stage.icon = ''; G.push(stage);
-  const lola = newMarker('npc', 7, 3); lola.characterId = 'chr_lola'; lola.name = 'Lola'; lola.rot = 180; lola.text = 'Welcome, welcome! Everyone take a seat.'; G.push(lola);
-  const ross = newMarker('npc', 8.5, 3); ross.characterId = 'chr_rossisco'; ross.name = 'Rossisco'; ross.rot = 180; ross.text = '…'; G.push(ross);
+  const lola = newMarker('npc', 7, 3); lola.characterId = who(10).id; lola.name = who(10).name; lola.rot = 180; lola.text = 'Welcome, welcome! Everyone take a seat.'; G.push(lola);
+  const ross = newMarker('npc', 8.5, 3); ross.characterId = who(11).id; ross.name = who(11).name; ross.rot = 180; ross.text = '…'; G.push(ross);
   G.push(newMarker('light', 7, 5));
   exit.link = { mapId: gym.id, targetId: back.id };
   back.link = { mapId: f1.id, targetId: exit.id };

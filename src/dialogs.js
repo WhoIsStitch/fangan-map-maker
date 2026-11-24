@@ -106,7 +106,7 @@ export function helpDialog() {
       h('li', null, 'To connect two maps: select stairs, a door or an Exit marker, then “Link to another map” › Pick on map. Links are two-way.'),
       h('li', null, 'Use the chapter / time pickers at the top to see the map as it is at that point in the story. Set “When does it exist?” on anything.'),
       h('li', null, 'Everything autosaves in this browser. Use File › Save to keep a .tvfmap.json file to share with your team.'),
-      h('li', null, 'Export › For Unity writes a .json the TVF importer (TVF › Map Maker › Import Map…) turns into a level.'))), [], { wide: true });
+      h('li', null, 'Export › For Unity writes a .json that the Unity importer (in the unity folder) turns into a level.'))), [], { wide: true });
 }
 
 // ---- Dorm generator -------------------------------------------------------------------------------

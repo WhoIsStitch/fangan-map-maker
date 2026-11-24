@@ -1,4 +1,4 @@
-# TVF Map Maker → Unity export format (`*.tvfmap-unity.json`)
+# Fangan Map Maker → Unity export format (`*.tvfmap-unity.json`)
 
 The Map Maker writes this file from **Export → For Unity**. It is built so Unity's `JsonUtility` can read it
 directly: no `null`s, no dictionaries, no polymorphism. Empty strings and `-1` mean "not set".

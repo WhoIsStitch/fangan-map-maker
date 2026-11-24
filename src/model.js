@@ -1,4 +1,4 @@
-// TVF Map Maker – project data model.
+// Fangan Map Maker – project data model.
 // Everything the editor, the 3D views and the exporters share lives here.
 //
 // Grid space: x grows right, y grows DOWN (like the screen). One grid cell = project.settings.cellSize metres.
@@ -107,9 +107,10 @@ export function newMap(name = 'New map', floor = 1) {
 }
 
 export const DEFAULT_CAST = [
-  ['Stitch', '#4aa3ff'], ['Nina', '#ff8fb1'], ['King', '#ffcf4a'], ['Cameron', '#8fd18f'],
-  ['Maia', '#c79bff'], ['Alfie', '#ff9a52'], ['Amelia', '#ff5e7a'], ['Atlantis', '#4ad6d6'],
-  ['Christie', '#f2a7e8'], ['Drago', '#9b6b4a'], ['Lola', '#e04f4f'], ['Rossisco', '#7a7aff'],
+  // placeholder cast for new projects — rename them and add portraits under Project › Characters
+  ['Player', '#4aa3ff'], ['Ana', '#ff8fb1'], ['Ben', '#ffcf4a'], ['Cleo', '#8fd18f'],
+  ['Dex', '#c79bff'], ['Eli', '#ff9a52'], ['Faye', '#ff5e7a'], ['Gus', '#4ad6d6'],
+  ['Hana', '#f2a7e8'], ['Ivo', '#9b6b4a'], ['Host A', '#e04f4f'], ['Host B', '#7a7aff'],
 ];
 
 export function newProject(name = 'Untitled project') {
@@ -118,7 +119,7 @@ export function newProject(name = 'Untitled project') {
     format: FORMAT, version: VERSION, id: uid('proj'), name,
     settings: {
       cellSize: 1,            // metres per grid cell
-      unitsPerMetre: 1.36,    // TVF scale: Stitch is 5'9" = 2.376 units, so 1 m ≈ 1.36 units
+      unitsPerMetre: 1,       // Unity units per metre (Unity's default is 1); change it to match your game's scale
       wallHeight: 3,          // metres
       doorHeight: 2.2,
       doorWidth: 1,           // cells; default door length
@@ -126,14 +127,14 @@ export function newProject(name = 'Untitled project') {
       eyeHeight: 1.43,        // metres (1.95 Unity units / 1.36)
       floorGap: 4,            // metres between floors in the building view
       walkSpeed: 1.9, runSpeed: 4.1,
-      fov: 60,                // walk-mode camera field of view (degrees, vertical) — matches the TVF overworld camera
+      fov: 60,                // walk-mode camera field of view (degrees, vertical) — 60 is a typical first-person game camera
       theme: 'dr1',
       mapScreenStyle: 'classic', // classic (DR1 flat) | v3 (tilted)
     },
     chapters: ['Prologue', 'Chapter 1', 'Chapter 2', 'Chapter 3', 'Chapter 4', 'Chapter 5', 'Chapter 6', 'Epilogue'],
     times: ['Morning', 'Daytime', 'Evening', 'Nighttime'],
     flags: [],
-    characters: DEFAULT_CAST.map(([n, c]) => ({ id: 'chr_' + n.toLowerCase(), name: n, color: c, asset: '', initials: n.slice(0, 2) })),
+    characters: DEFAULT_CAST.map(([n, c]) => ({ id: 'chr_' + n.toLowerCase().replace(/\s+/g, '_'), name: n, color: c, asset: '', initials: n.slice(0, 2) })),
     evidence: [],
     customThemes: [],
     prefabs: [],

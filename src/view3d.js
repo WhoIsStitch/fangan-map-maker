@@ -474,7 +474,7 @@ function loadWalkMap(m, at) {
   const isNight = S.view.time >= 0 && /night/i.test(S.project.times[S.view.time] || '');
   scene.fog = new THREE.Fog(new THREE.Color(T.sky3d), 18, 60);
   addLights(scene, T, isNight ? 'night' : 'default');
-  // same field of view as the game's overworld camera (TVF uses 60°); wider makes rooms look bigger and corridors longer
+  // same field of view as the game's overworld camera (60° by default); wider makes rooms look bigger and corridors longer
   camera = new THREE.PerspectiveCamera(S.project.settings.fov || 60, 1, 0.05, 300);
   resize();
   world = buildMapGroup(m, S.project, { ceilings: true });

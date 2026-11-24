@@ -147,7 +147,7 @@ const MENUS = {
     ['🔁 Reset collected evidence (walk mode)', () => { resetCollected(); toast('Evidence reset'); }],
   ],
   export: () => [
-    ['🎮 For Unity (.json)', () => { exportUnity(); toast('Exported. In Unity: TVF › Map Maker › Import Map…'); }],
+    ['🎮 For Unity (.json)', () => { exportUnity(); toast('Exported. In Unity, use the importer from the unity folder (Map Maker › Import Map…).'); }],
     ['#️⃣ C# ids (MapIds.cs)', exportCSharp],
     ['📖 Unity format spec', () => window.open('docs/UNITY-FORMAT.md', '_blank')],
     '-',
@@ -181,7 +181,7 @@ function refreshTop() {
   th.replaceChildren(...allThemes(p).map((t) => h('option', { value: t.id }, t.name)), h('option', { value: '__edit' }, '🎨 Make / edit styles…'));
   th.value = p.settings.theme;
   $('#dirtyDot').classList.toggle('on', S.dirty);
-  document.title = (S.dirty ? '• ' : '') + p.name + ' — TVF Map Maker';
+  document.title = (S.dirty ? '• ' : '') + p.name + ' — Fangan Map Maker';
   renderCrumbs();
 }
 

@@ -2,21 +2,21 @@
 
 export const THEMES = {
   dr1: {
-    name: 'Hope’s Peak pink (DR1)', bg: '#fff6f4', hall: '#f9dcd8', room: '#f4a3a0', roomAlt: '#ef8f8c',
+    name: 'Pink pixel', bg: '#fff6f4', hall: '#f9dcd8', room: '#f4a3a0', roomAlt: '#ef8f8c',
     line: '#3b2420', inner: '#fff2ee', glow: 'rgba(255,90,90,.75)', glowSize: 14, text: '#3b2420',
     icon: '#3b2420', iconLight: 'rgba(255,255,255,.6)', hatch: '#3b2420', hatchBg: '#f9dcd8', grid: 'rgba(59,36,32,.08)',
     accent: '#e8465a', font: '"Press Start 2P", "VT323", monospace', pixel: true,
     floor3d: '#d8c2bf', roomFloor3d: '#c99d97', wall3d: '#f1dcd7', ceiling3d: '#efe4e1', door3d: '#b23b4a', trim3d: '#4b2a26', sky3d: '#1b0d12',
   },
   sdr2: {
-    name: 'Tropical green (SDR2)', bg: '#f4fff9', hall: '#d6f5e5', room: '#93d9b5', roomAlt: '#7ccfa4',
+    name: 'Tropical green', bg: '#f4fff9', hall: '#d6f5e5', room: '#93d9b5', roomAlt: '#7ccfa4',
     line: '#24493c', inner: '#effff6', glow: 'rgba(60,200,140,.7)', glowSize: 12, text: '#24493c',
     icon: '#24493c', iconLight: 'rgba(255,255,255,.6)', hatch: '#24493c', hatchBg: '#cdeedd', grid: 'rgba(36,73,60,.08)',
     accent: '#22a06b', font: '"VT323", monospace', pixel: true,
     floor3d: '#c9d9cf', roomFloor3d: '#a9c4b2', wall3d: '#e4f1ea', ceiling3d: '#eef6f1', door3d: '#2f7d5b', trim3d: '#24493c', sky3d: '#0b1a14',
   },
   v3: {
-    name: 'Killing school (V3)', bg: '#170a1f', hall: '#a9a7b4', room: '#2b2833', roomAlt: '#38343f',
+    name: 'Purple neon', bg: '#170a1f', hall: '#a9a7b4', room: '#2b2833', roomAlt: '#38343f',
     line: '#ffffff', inner: 'rgba(255,255,255,.15)', glow: 'rgba(255,45,140,.8)', glowSize: 10, text: '#ffffff',
     icon: '#ffffff', iconLight: 'rgba(255,255,255,.35)', hatch: '#ff2d8a', hatchBg: '#2b1430', grid: 'rgba(255,255,255,.06)',
     accent: '#ff2d8a', font: '"Rajdhani", "Segoe UI", sans-serif', pixel: false,

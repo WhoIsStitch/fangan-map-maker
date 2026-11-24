@@ -5,41 +5,22 @@ import { newRoom, newMap, uid, elementBounds } from './model.js';
 import { bakeMap } from './bake.js';
 import { mapBounds } from './render2d.js';
 
-// The TVF room list, offered the first time you open the checklist.
+// An example room list, shown the first time you open the checklist. Replace it with your own.
 export const DEFAULT_LIST = `Prologue:
-History Room (F2)
-Science Lab (F2)
-Kitchen (F2)
-Morgue (F2)
-The Data Source (F2)
-Bird Sanctuary (F2)
-Gym (F1)
+Entrance Hall (F1)
 Dormitory Corridor (F1)
-Stitch's Room (F1)
+Player's Room (F1)
+Gym (F1)
 
 Chapter 1:
-Canteen (F1)
-Gym Storage Room (F1)
-Pantry (F1)
-Lounge (F1)
+Dining Hall (F1)
+Kitchen (F1)
 Warehouse (F1)
-Salon (F1)
 
 Chapter 2:
-Greenhouse (F1)
-Garage (F1)
-Swimming Pool (F1)
-Observatory (F2)
 Library (F2)
-
-Chapter 3:
-Gardens (F1)
-Rock Centre (F1)
-Theatre (F1)
-Red Room (F2)
-
-Chapter 4:
-Rossisco's Office`;
+Pool (F2)
+Classroom (F2)`;
 
 const MANUAL = [['props', 'Furnished (props)'], ['spots', 'Examine spots / evidence'], ['walked', 'Walked through in 3D']];
 
@@ -183,7 +164,7 @@ function editList() {
 }
 
 function copyText(items) {
-  const lines = ['TVF map checklist', ''];
+  const lines = [S.project.name + ' — map checklist', ''];
   const chs = [...new Set(items.map((i) => i.p.chapter))];
   for (const c of chs) {
     lines.push(`## ${c >= 0 ? S.project.chapters[c] : 'No chapter'}`);
