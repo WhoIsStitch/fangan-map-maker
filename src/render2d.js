@@ -87,7 +87,7 @@ export function drawMap(g, map, opts) {
     }
     // arrow showing which way is up
     const c = { x: r.x + r.w / 2, y: r.y + r.h / 2 };
-    const ic = iconCanvas(s.goes === 'down' ? 'down' : 'up', T.icon, T.iconLight, 1);
+    const ic = iconCanvas('up', T.icon, T.iconLight, 1); // the arrow always points the way you walk onto the stairs (up or down)
     if (ic) {
       const sz = Math.min(r.w, r.h) * cell * 0.55;
       g.save();

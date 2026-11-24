@@ -567,7 +567,7 @@ function stairsFields(ids, el) {
     sec('Stairs',
       row('Name', textField(ids, el, 'name')),
       row('Show name', checkField(ids, el, 'showLabel', 'on the map')),
-      row('Climb toward', h('div', { class: 'chips' }, dirs.map(([d, l]) => h('span', { class: 'chip' + (el.dir === d ? ' on' : ''), onclick: () => setOn(ids, 'dir', d) }, l)))),
+      row('Walk toward', h('div', { class: 'chips' }, dirs.map(([d, l]) => h('span', { class: 'chip' + (el.dir === d ? ' on' : ''), onclick: () => setOn(ids, 'dir', d) }, l)))),
       row('Goes', select([['up', 'Up'], ['down', 'Down']], el.goes, (v) => setOn(ids, 'goes', v)))),
     chapterLockBlock(ids, el, 'stairs'),
     linkBlock(ids, el));
