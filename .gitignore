@@ -1,0 +1,6 @@
+node_modules/
+dist/
+# your own map projects stay on your computer (the repo is public)
+projects/
+*.tmp
+.claude/

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TVF Map Maker</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%23e8465a'/><path d='M3 3h10v10H3z' fill='none' stroke='white' stroke-width='1.5'/><path d='M3 8h6M9 3v10' stroke='white' stroke-width='1.5'/></svg>" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <header id="topbar">
+    <button id="homeBtn" class="home-btn" title="All projects">⌂</button>
+    <div class="brand"><span class="logo">▦</span> TVF <b>MAP MAKER</b></div>
+    <input id="projName" class="proj-name" title="Project name" spellcheck="false" />
+    <span id="dirtyDot" class="dirty-dot" title="Unsaved changes (autosaved in this browser)"></span>
+    <nav class="menus">
+      <div class="menu" data-menu="file"><button>File ▾</button></div>
+      <div class="menu" data-menu="edit"><button>Edit ▾</button></div>
+      <div class="menu" data-menu="tools"><button>Build ▾</button></div>
+      <div class="menu" data-menu="export"><button>Export ▾</button></div>
+    </nav>
+    <div class="undo-btns">
+      <button id="undoBtn" title="Undo (Ctrl+Z)">↶</button>
+      <button id="redoBtn" title="Redo (Ctrl+Y)">↷</button>
+    </div>
+    <div class="modes" role="tablist">
+      <button data-mode="edit" class="on" title="2D editor">✏️ Edit</button>
+      <button data-mode="walk" title="Walk around in first person (Tab)">🚶 Walk</button>
+      <button data-mode="building" title="See the whole building in 3D (B)">🏢 Building</button>
+      <button data-mode="screen" title="Preview the in-game map screen">🗺️ Map screen</button>
+    </div>
+    <div class="state-bar" title="Show the map as it is in this chapter / time. Objects with conditions appear and disappear.">
+      <select id="chapterSel"></select>
+      <select id="timeSel"></select>
+      <button id="flagsBtn" title="Story flags to test with">⚑ Flags</button>
+    </div>
+    <select id="themeSel" title="Map style"></select>
+    <button id="helpBtn" title="Shortcuts and help (?)">?</button>
+  </header>
+
+  <aside id="left">
+    <section class="panel">
+      <h3>Maps <span class="grow"></span><button id="linkGraphBtn" class="mini" title="See how the maps connect">⇄ Links</button><button id="addAreaBtn" class="mini" title="New area: moves what you have selected into its own workspace (in this project), or makes an empty one">◧ Area</button><button id="addMapBtn" class="mini" title="Add a map">＋</button></h3>
+      <div id="mapList"></div>
+    </section>
+    <section class="panel">
+      <h3>Tools</h3>
+      <div id="tools"></div>
+      <div id="markerKinds"></div>
+    </section>
+    <section class="panel grow-panel">
+      <h3>Outliner <span class="grow"></span><label class="tiny"><input type="checkbox" id="outlineAll" /> all maps</label></h3>
+      <input id="outlineSearch" class="search" placeholder="Search… (Ctrl+K)" />
+      <div id="outliner"></div>
+    </section>
+  </aside>
+
+  <main id="stage">
+    <div id="crumbs"></div>
+    <canvas id="editor" tabindex="0"></canvas>
+    <canvas id="minimap" title="Minimap: click to jump"></canvas>
+    <div id="view3d"></div>
+    <div id="hud3d"></div>
+    <div id="buildingBar"></div>
+    <div id="screenView"></div>
+    <div id="dropHint">Drop images: on a room to use as its icon, anywhere else to add as a prop, or into the Images tab.</div>
+  </main>
+
+  <aside id="right">
+    <div class="tabs" id="rightTabs">
+      <button data-tab="inspect" class="on">Inspect</button>
+      <button data-tab="project">Project</button>
+      <button data-tab="images">Images</button>
+      <button data-tab="checklist" title="Your room list: what is done and what is left">Checklist</button>
+      <button data-tab="issues">Issues <span id="issueCount" class="badge"></span></button>
+      <button data-tab="history">History</button>
+    </div>
+    <div id="tabBody"></div>
+  </aside>
+
+  <footer id="status">
+    <span id="stCursor"></span>
+    <span id="stTool"></span>
+    <span id="stSel"></span>
+    <span class="grow"></span>
+    <button id="thickBtn" class="mini" title="When you scale a selection with the box handles, choose which things keep their width">Scaling: keep width ▾</button>
+    <label><input type="checkbox" id="snapChk" checked /> Snap</label>
+    <label><input type="checkbox" id="gridChk" checked /> Grid</label>
+    <span id="stZoom"></span>
+    <span id="stSaved"></span>
+  </footer>
+
+  <div id="home" class="show"><div class="hm-loading">Loading your projects…</div></div>
+  <div id="toasts"></div>
+  <div id="modalRoot"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

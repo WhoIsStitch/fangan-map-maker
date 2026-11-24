@@ -1,0 +1,7 @@
+# Netlify builds the Map Maker website from this repo automatically on every push.
+[build]
+  command = "npx vite build && mkdir -p dist/docs && cp docs/*.md dist/docs/"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
