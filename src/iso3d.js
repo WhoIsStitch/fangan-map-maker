@@ -43,7 +43,7 @@ export function isoBuild(m, project, view, img, bounds, margin, P, theme) {
   slabMat.color.multiplyScalar(0.32);
   slabMat.userData.own = true;
   const baked = bakeMap(m, view);
-  const T = 0.3 * cs;
+  const T = 0.9 * cs; // slab thickness
   for (const [, cells] of baked.owned) for (const r of cellsToRects(cells)) {
     const box = new THREE.Mesh(new THREE.BoxGeometry(r.w * cs, T, r.h * cs), slabMat);
     box.position.set((r.x + r.w / 2) * cs, -T / 2 - 0.01, (r.y + r.h / 2) * cs);
