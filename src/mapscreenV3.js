@@ -555,6 +555,9 @@ function draw(sharp) {
   const it = st.items[st.sel];
   const onThisMap = st.shown && it && it.mapId === st.mapId;
 
+  // stairs as 3D steps
+  for (const s of m.elements) if (s.type === 'stairs' && vis(s)) drawStairs3D(g, s);
+
   // characters standing on this floor, back to front
   const people = st.students.filter((s) => s.mapId === m.id).map((s) => ({ ...s, p: proj(s.x, s.y) }));
   const pp = S.playerPos && S.playerPos.mapId === m.id ? { ch: S.project.characters[0], p: proj(S.playerPos.x, S.playerPos.y), player: true } : null;

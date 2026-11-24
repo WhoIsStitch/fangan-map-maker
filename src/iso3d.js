@@ -37,16 +37,13 @@ export function isoBuild(m, project, view, img, bounds, margin, P, theme) {
   cs = project.settings.cellSize || 1;
   if (group) { scene.remove(group); disposeGroup(group); }
   group = new THREE.Group();
-  // walls, doors, stairs from the walk-mode builder, cut down to a low "dollhouse" height
-  const built = buildMapGroup(m, project, { view, cutaway: 0.4, ceilings: false, forExport: true });
-  for (const n of built.npcs) built.group.remove(n); // characters are drawn as sprites on top instead
-  group.add(built.group);
-  // floor slabs with real thickness under every floor area
-  const slabMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(theme.hall || '#888'), roughness: 0.9 });
-  slabMat.color.multiplyScalar(0.45);
+  void buildMapGroup;
+  // the flat map, with a real 3D slab underneath every floor area (its thickness / "bottom")
+  const slabMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(theme.hall || '#888') });
+  slabMat.color.multiplyScalar(0.32);
   slabMat.userData.own = true;
   const baked = bakeMap(m, view);
-  const T = 0.35;
+  const T = 0.3 * cs;
   for (const [, cells] of baked.owned) for (const r of cellsToRects(cells)) {
     const box = new THREE.Mesh(new THREE.BoxGeometry(r.w * cs, T, r.h * cs), slabMat);
     box.position.set((r.x + r.w / 2) * cs, -T / 2 - 0.01, (r.y + r.h / 2) * cs);
