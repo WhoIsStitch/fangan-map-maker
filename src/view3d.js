@@ -44,16 +44,8 @@ export function init3D(container, hudEl) {
       if (e.code === 'KeyE' || e.code === 'Enter' || e.code === 'Space') { e.preventDefault(); interact(); }
       if (e.code === 'KeyM') { hud.classList.toggle('hide-minimap'); }
       if (e.code === 'KeyC') { world.ceilings.forEach((m) => (m.visible = !m.visible)); }
-      if (e.code === 'Minus' || e.code === 'Equal' || e.code === 'NumpadSubtract' || e.code === 'NumpadAdd') {
-        // shrink / grow the whole map live: smaller squares = cosier rooms and shorter corridors
-        const st = S.project.settings;
-        const step = (e.code === 'Minus' || e.code === 'NumpadSubtract' ? -1 : 1) * (st.cellSize <= 0.6 ? 0.025 : 0.05);
-        const next = Math.round(Math.max(0.2, Math.min(2, st.cellSize + step)) * 1000) / 1000;
-        if (next === st.cellSize) return;
-        change('Map scale ' + next + ' m', () => { S.project.settings.cellSize = next; });
-        loadWalkMap(world.map, { x: player.x, y: player.y, face: player.yaw });
-        emit('toast', { text: `Scale: ${next} m per square — rooms ${next < 1 ? 'smaller' : next > 1 ? 'bigger' : 'normal size'} (−/= to change, Ctrl+Z to undo)` });
-      }
+      if (e.code === 'Minus' || e.code === 'NumpadSubtract') walkScale(-1);
+      if (e.code === 'Equal' || e.code === 'NumpadAdd') walkScale(1);
     }
   });
   window.addEventListener('keyup', (e) => keys.delete(e.code));
@@ -460,10 +452,37 @@ export function startWalk(at = null) {
     <div class="w-cross"></div>
     <div class="w-prompt"></div>
     <div class="w-msg"></div>
+    <div class="w-scale"><button data-s="-1" title="Narrower halls and rooms (−)">− Narrower</button><span class="w-scale-v"></span><button data-s="1" title="Wider halls and rooms (=)">Wider +</button></div>
     <div class="w-help">Click to look around · WASD move · Shift run · E examine / talk · M minimap · C ceiling · − / = room scale · Tab back to the editor</div>
     <div class="w-fade"></div>`;
+  hud.querySelectorAll('.w-scale button').forEach((b) => b.addEventListener('click', (ev) => { ev.stopPropagation(); walkScale(+b.dataset.s); }));
+  showScale();
   clock.getDelta();
   loop();
+}
+
+/** Change the real-world size of one grid square while walking. Only the 3D changes; the 2D map stays as drawn. */
+function walkScale(dir) {
+  const st = S.project.settings;
+  const step = dir * (st.cellSize <= 0.6 ? 0.025 : 0.05);
+  const next = Math.round(Math.max(0.2, Math.min(2, st.cellSize + step)) * 1000) / 1000;
+  if (next === st.cellSize || !world) return;
+  change('Map scale ' + next + ' m', () => { S.project.settings.cellSize = next; });
+  loadWalkMap(world.map, { x: player.x, y: player.y, face: player.yaw });
+  showScale();
+}
+function showScale() {
+  const el = hud.querySelector('.w-scale-v');
+  if (!el) return;
+  const cs = S.project.settings.cellSize;
+  // how wide is the hall you're standing in?
+  let hall = '';
+  const cell = world && cellAt(world.baked, player.x, player.y);
+  if (cell && world) {
+    const r = cellsToRects(world.baked.owned.get(cell.el) || new Set()).find((q) => player.x >= q.x && player.x < q.x + q.w && player.y >= q.y && player.y < q.y + q.h);
+    if (r) hall = ` · here: ${(Math.min(r.w, r.h) * cs).toFixed(1)} m wide`;
+  }
+  el.textContent = `1 square = ${cs} m${hall}`;
 }
 
 function loadWalkMap(m, at) {
@@ -734,6 +753,7 @@ function updateHud() {
   const locEl = hud.querySelector('.w-room');
   hud.querySelector('.w-map').textContent = world.map.name + ' · ';
   if (room !== lastRoom) {
+    setTimeout(showScale, 0);
     lastRoom = room;
     locEl.textContent = room ? elementTitle(room, S.project) : '';
     locEl.classList.remove('pop'); void locEl.offsetWidth; locEl.classList.add('pop');

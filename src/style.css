@@ -403,3 +403,8 @@ body.home-open #toasts { z-index: 300; }
 .ck-c.na { opacity: .45; cursor: default; }
 
 .v3-gl, .v3-top { pointer-events: none; }
+
+/* walk-mode scale control */
+.w-scale { position: absolute; left: 14px; bottom: 40px; display: flex; gap: 8px; align-items: center; pointer-events: auto; background: #000a; padding: 6px 8px; border-radius: 8px; color: #fff; font-size: 13px; }
+.w-scale button { background: #ffffff1a; border: 1px solid #ffffff44; color: #fff; padding: 4px 10px; }
+.w-scale button:hover { background: var(--accent); border-color: var(--accent); }
